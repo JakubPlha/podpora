@@ -1,7 +1,7 @@
-const USE_BACKEND = false;
+const USE_BACKEND = true;
 
 
-const BACKEND_URL = "";
+const BACKEND_URL = "https://podpora-o8xb.onrender.com/";
 const STUDNT_ID = "Tonda_Párek_4IT";
 
 const form = document.getElementById("question-form");
