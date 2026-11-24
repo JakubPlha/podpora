@@ -28,7 +28,7 @@ app.config["MAX_CONTENT_LENGTH"] = 32 * 1024
 # ------------------------------------------------------------
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "").strip()
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini").strip()
 
 client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 

@@ -1,4 +1,4 @@
-const BACKEND_URL = "https://vdf-games-support-api.onrender.com/chat";
+const BACKEND_URL = "https://podpora-o8xb.onrender.com/chat";
 
 const form = document.getElementById("question-form");
 const textarea = document.getElementById("question");
