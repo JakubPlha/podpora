@@ -12,7 +12,12 @@ from openai import OpenAI
 # ============================================================
 
 app = Flask(__name__)
-CORS(app)
+ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("ALLOWED_ORIGINS", "").split(",")
+    if origin.strip()
+]
+CORS(app, resources={r"/*": {"origins": ALLOWED_ORIGINS}})
 app.config["MAX_CONTENT_LENGTH"] = 32 * 1024
 
 
@@ -21,7 +26,7 @@ app.config["MAX_CONTENT_LENGTH"] = 32 * 1024
 # ------------------------------------------------------------
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-OPENAI_MODEL = os.environ.get("OPENAI_MODEL")
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "").strip()
 
 client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
@@ -86,11 +91,17 @@ def health():
 
 @app.post("/chat")
 def chat():
-    data = request.get_json(silent=True) or {}
+    data = request.get_json(silent=True)
 
-    message = (data.get("message") or "").strip()
-    student = (data.get("student") or "unknown").strip()
-    email = (data.get("email") or "").strip()
+    if not isinstance(data, dict):
+        return jsonify({
+            "error": "Požadavek musí být JSON objekt."
+        }), 400
+
+    message = data.get("message")
+    if not isinstance(message, str):
+        message = ""
+    message = message.strip()
 
     if not message:
         return jsonify({
@@ -172,5 +183,5 @@ if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=port,
-        debug=True
+        debug=False
     )

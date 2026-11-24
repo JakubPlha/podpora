@@ -1,19 +1,13 @@
-const USE_BACKEND = true;
-
-const BACKEND_URL = "https://podpora-o8xb.onrender.com";
-const STUDENT_ID = "Tonda_Párek_4IT";
+const BACKEND_URL = "https://vdf-games-support-api.onrender.com/chat";
 
 const form = document.getElementById("question-form");
 const textarea = document.getElementById("question");
-const emailInput = document.getElementById("email");
 const answerDiv = document.getElementById("answer");
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const text = textarea.value.trim();
-    const email = emailInput.value.trim();
-
     if (!text) {
         answerDiv.textContent = "Nejdřív napiš dotaz.";
         return;
@@ -23,34 +17,17 @@ form.addEventListener("submit", async (e) => {
     form.querySelector("button").disabled = true;
 
     try {
-        const payload = {
-            message: text,
-            student: STUDENT_ID,
-            email: email || null
-        };
-
-        if (!USE_BACKEND) {
-            answerDiv.textContent =
-                `Demo odpověď (bez serveru)\n\n` +
-                `Student: ${payload.student}\n` +
-                `Dotaz: ${payload.message}`;
-            return;
-        }
-
-        const res = await fetch(BACKEND_URL, {
+        const response = await fetch(BACKEND_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({ message: text })
         });
 
-        if (!res.ok) {
-            answerDiv.textContent = "Server vrátil chybu: " + res.status;
-            return;
-        }
+        const data = await response.json();
 
-        const data = await res.json();
-
-        if (data.reply) {
+        if (!response.ok) {
+            answerDiv.textContent = data.error || `Server vrátil chybu: ${response.status}`;
+        } else if (data.reply) {
             answerDiv.textContent = data.reply;
         } else if (data.error) {
             answerDiv.textContent = "Chyba serveru: " + data.error;
