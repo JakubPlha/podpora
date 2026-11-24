@@ -10,4 +10,4 @@ services:
       - key: OPENAI_MODEL
         value: gpt-4o-mini
       - key: ALLOWED_ORIGINS
-        sync: false
+        value: https://jakubplha.github.io
